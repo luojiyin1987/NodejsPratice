@@ -1,52 +1,46 @@
-var express = require('express');
-var path = require('path')
-var favicon = require('serve-favicon')
-var  logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+var eventproxy = require('eventproxy');
+var superagent = require('superagent');
+var cheerio = require('cheerio');
+var url = require('url');
 
-var routes = require('./routes/index');
-var users = rquire('./routes/users');
+var cnodeUrl = 'https://cnodejs.org/';
 
-var app = express();
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+superagent.get(cnodeUrl)
+    .end(function(err, res){
+        if(err) {
+            return console.error(err);
+        }
+        var topicUrls = [];
+        var $ = cheerio.load(res.text);
+        $('#topic_list .topic_title').each(function(idx, element){
+            var $element = $(element);
+            var href = url.resolve(cnodeUrl, $element.attr('href'));
+            topicUrls.push(href);
+        });
+        
+        var ep = new eventproxy();
+        
+        ep.after('topic_html', topicUrls.length, function(topics){
+            topics = topics.map(function(topicPair) {
+                var topicUrl = topicPair[0];
+                var topocHtml = topicPair[1];
+                var $ = cheerio.load(topocHtml);
+                return({
+                    title: $('.topic_full_title').text().trim(),
+                    href: topicUrl,
+                    comment1: $('.reply_content').eq(0).text().trim(),
+                });
+            });
 
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname,'public')));
+            console.log('final:');
+            console.log('topics');
+        });
 
-app.use('/', routes);
-app.use('/users', users);
-
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404 ;
-    next(err);
-});
-
-if(app.get('env') === 'development'){
-    app.use(function(err, req, res, next){
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
+        topicUrls.forEach(function(topicUrl) {
+            superagent.get(topicUrl)
+                .end(function(err, res) {
+                    console.log('feth ' + topicUrl + ' succuessful')
+                    ep.emit('topic_html ', [topicUrl, res.text]);
+                    });    
         });
     });
-}
-
-app.use(function(err, req, res, next){
-    res.status(err.status || 500);
-    res.render('error', {
-                message: err.message,
-                error: {}
-    });
-});
-
-module.exports = app ;
-
-
-    
-
