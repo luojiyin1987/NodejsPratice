@@ -1,0 +1,14 @@
+{
+  "name": "gulu",
+  "version": "1.0.0",
+  "description": "codetest",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "luojiyin",
+  "license": "MIT",
+  "dependencies": {
+    "vue": "^2.6.10"
+  }
+}
