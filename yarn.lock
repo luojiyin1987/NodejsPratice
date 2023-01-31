@@ -59,8 +59,8 @@ component-emitter@^1.3.0:
   resolved "https://registry.npmmirror.com/component-emitter/-/component-emitter-1.3.0.tgz"
 
 cookiejar@^2.1.3:
-  version "2.1.3"
-  resolved "https://registry.npmmirror.com/cookiejar/-/cookiejar-2.1.3.tgz"
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/cookiejar/-/cookiejar-2.1.4.tgz#ee669c1fea2cf42dc31585469d193fef0d65771b"
 
 copy-to@^2.0.1:
   version "2.0.1"
