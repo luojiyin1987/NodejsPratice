@@ -1,9 +1,9 @@
 {
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
-    "debug": "^4.3.4",
+    "debug": "^4.4.0",
     "eventproxy": "^1.0.0",
-    "superagent": "^8.0.3",
-    "utility": "^1.17.0"
+    "superagent": "^8.1.2",
+    "utility": "^1.18.0"
   }
 }
